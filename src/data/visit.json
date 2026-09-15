@@ -1,0 +1,39 @@
+{
+  "name": "Halbton",
+  "address": "Gerichtstraße 48, 13347 Berlin",
+  "addressLink": "https://maps.google.com/?q=Gerichtstra%C3%9Fe+48%2C+13347+Berlin",
+  "email": "mail@halbton.berlin",
+  "phone": "+49 30 46 07 81 20",
+  "timeZone": "Europe/Berlin",
+  "hours": "12:00–19:00",
+  "openWeekdays": [4, 5, 6, 0],
+  "weeksAhead": 8,
+  "closedDates": [
+    "2026-10-03",
+    "2026-12-24",
+    "2026-12-25",
+    "2026-12-26",
+    "2026-12-31",
+    "2027-01-01"
+  ],
+  "maxPerType": 10,
+  "currency": "€",
+  "admission": [
+    {
+      "id": "full",
+      "label": "Full",
+      "price": 8
+    },
+    {
+      "id": "reduced",
+      "label": "Reduced",
+      "price": 5,
+      "note": "Students, under 26, unemployed"
+    },
+    {
+      "id": "under18",
+      "label": "Under 18",
+      "price": 0
+    }
+  ]
+}

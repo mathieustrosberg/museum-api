@@ -1,69 +1,410 @@
-import Image from "next/image";
+import {
+  getArchive,
+  getArtists,
+  getExhibitions,
+  getObjects,
+  getVisitInfo,
+} from "@/lib/data";
+import { getOpenDays } from "@/lib/visit";
 
-export default function Home() {
+/**
+ * Documentation de l'API (Server Component). Les exemples de réponse sont
+ * produits à partir des vraies données : la documentation ne peut pas dériver.
+ */
+const BASE_URL = process.env.VERCEL_PROJECT_PRODUCTION_URL
+  ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}/`
+  : "http://localhost:4000/";
+
+const show = (value) => JSON.stringify(value, null, 2);
+
+/** Liste JSON abrégée : le premier élément puis un commentaire. */
+function list(items, label) {
+  const first = show(items[0])
+    .split("\n")
+    .map((line) => `  ${line}`)
+    .join("\n");
+  return `[\n${first},\n  // ${items.length - 1} autres ${label}\n]`;
+}
+
+const OBJECT_FIELDS = [
+  ["id", "number", "Identifiant numérique de l'œuvre"],
+  ["slug", "string", "Identifiant unique dans les URL"],
+  ["title", "string", "Titre de l'œuvre"],
+  ["artist", "string", "Nom de l'artiste"],
+  ["artistSlug", "string", "Slug de l'artiste (voir /artists/{slug})"],
+  ["year", "number", "Année de réalisation"],
+  ["type", "string", "Médium (Offset, Riso, Screenprint, Gelatin silver…)"],
+  ["medium", "string", "Technique détaillée (encre, papier, linéature)"],
+  ["dimensions", "string", "Dimensions d'une feuille"],
+  ["sheets", "number", "Nombre de feuilles"],
+  ["inventory", "string", "Numéro d'inventaire"],
+  ["color", "string", "Encre ou procédé dominant"],
+  ["description", "string", "Notice de l'œuvre, en texte brut"],
+  ["image", "string", "Lien vers l'image principale (feuille 1, format 3:4)"],
+  ["gallery", "string array", "Liens des autres feuilles, dans l'ordre"],
+  [
+    "exhibition",
+    "string | null",
+    "Slug de l'exposition où l'œuvre est ou a été montrée",
+  ],
+  ["location", "string", "Emplacement dans le bâtiment"],
+  ["onView", "boolean", "Vrai si l'œuvre est actuellement exposée"],
+  ["similar", "string array", "Slugs de quatre œuvres proches"],
+];
+
+const ARCHIVE_FIELDS = [
+  ["id", "number", "Identifiant numérique"],
+  ["slug", "string", "Identifiant unique dans les URL"],
+  ["title", "string", "Titre de l'entrée (Proof log 01…)"],
+  ["date", "string", "Mois et année"],
+  ["type", "string", "Proof, Press, Screen, Ink, Light, Sheet, Paper ou Plate"],
+  ["orientation", "string", "portrait (3:4) ou landscape (4:3)"],
+  ["description", "string", "Légende"],
+  ["image", "string", "Lien vers l'image"],
+];
+
+const ARTIST_FIELDS = [
+  ["id", "number", "Identifiant numérique"],
+  ["slug", "string", "Identifiant unique dans les URL"],
+  ["name", "string", "Nom"],
+  ["born", "string", "Année et lieu de naissance"],
+  ["based", "string", "Ville de travail"],
+  ["practice", "string", "Pratique, en une phrase"],
+  ["works", "string array", "Slugs des œuvres de la collection"],
+];
+
+const EXHIBITION_FIELDS = [
+  ["id", "number", "Identifiant numérique"],
+  ["slug", "string", "Identifiant unique dans les URL"],
+  ["title", "string", "Titre"],
+  ["dates", "string", "Période"],
+  ["status", "string", "on view, upcoming ou past"],
+  ["description", "string", "Présentation"],
+  ["works", "string array", "Slugs des œuvres présentées"],
+];
+
+const VISIT_FIELDS = [
+  ["name", "string", "Nom du lieu"],
+  ["address", "string", "Adresse postale"],
+  ["addressLink", "string", "Lien vers la carte"],
+  ["email", "string", "Adresse de contact"],
+  ["phone", "string", "Téléphone"],
+  ["timeZone", "string", "Fuseau horaire du musée"],
+  ["hours", "string", "Horaires des jours d'ouverture"],
+  [
+    "openWeekdays",
+    "number array",
+    "Jours d'ouverture (0 = dimanche … 6 = samedi)",
+  ],
+  ["weeksAhead", "number", "Horizon de réservation, en semaines"],
+  ["closedDates", "string array", "Fermetures exceptionnelles (YYYY-MM-DD)"],
+  ["maxPerType", "number", "Nombre maximal de billets par catégorie"],
+  ["currency", "string", "Devise"],
+  [
+    "admission",
+    "object array",
+    "Catégories de billets : id, label, price, note",
+  ],
+  [
+    "days",
+    "object array",
+    "Jours d'ouverture à venir : value (YYYY-MM-DD) et label",
+  ],
+];
+
+const TICKET_FIELDS = [
+  ["reference", "string", "Référence de retrait, format HB-AAMMJJ-XXXX"],
+  ["date", "string", "Jour de visite (YYYY-MM-DD)"],
+  ["dateLabel", "string", "Jour de visite, en clair"],
+  ["tickets", "object array", "Lignes retenues : id, label, quantity, price"],
+  ["total", "number", "Montant à régler à l'entrée"],
+  ["currency", "string", "Devise"],
+  ["name", "string", "Nom du visiteur, tel que reçu"],
+];
+
+function H2({ children }) {
+  return <h2 className="mt-12 mb-4 text-2xl font-semibold">{children}</h2>;
+}
+
+function H3({ children }) {
+  return <h3 className="mt-10 mb-3 text-lg font-semibold">{children}</h3>;
+}
+
+function H4({ children }) {
+  return <h4 className="mt-6 mb-2 font-semibold">{children}</h4>;
+}
+
+function Code({ children }) {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.js
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+    <code className="rounded bg-neutral-100 px-1.5 py-0.5 font-mono text-[0.85em]">
+      {children}
+    </code>
+  );
+}
+
+function Block({ children }) {
+  return (
+    <pre className="my-3 overflow-x-auto rounded-md bg-neutral-100 p-4 font-mono text-xs leading-relaxed">
+      {children}
+    </pre>
+  );
+}
+
+function Fields({ items }) {
+  return (
+    <ul className="my-2 list-disc space-y-1 pl-6 text-sm">
+      {items.map(([name, type, text]) => (
+        <li key={name}>
+          <Code>{name}</Code> ({type}) : {text}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function Route({ method, path }) {
+  return (
+    <p className="my-2 text-sm">
+      <span className="mr-2 rounded bg-neutral-900 px-1.5 py-0.5 font-mono text-xs text-white">
+        {method}
+      </span>
+      <Code>{path}</Code>
+    </p>
+  );
+}
+
+export default function DocumentationPage() {
+  const objects = getObjects();
+  const archive = getArchive();
+  const artists = getArtists();
+  const exhibitions = getExhibitions();
+  const visit = { ...getVisitInfo(), days: getOpenDays().slice(0, 2) };
+  const [firstDay] = visit.days;
+
+  const ticketRequest = {
+    name: "Ada Berger",
+    email: "ada@example.com",
+    date: firstDay?.value,
+    tickets: { full: 2, under18: 1 },
+  };
+  const ticketResponse = {
+    reference: "HB-260917-K7RM",
+    date: firstDay?.value,
+    dateLabel: firstDay?.label,
+    tickets: [
+      { id: "full", label: "Full", quantity: 2, price: 8 },
+      { id: "under18", label: "Under 18", quantity: 1, price: 0 },
+    ],
+    total: 16,
+    currency: visit.currency,
+    name: "Ada Berger",
+  };
+
+  return (
+    <main className="mx-auto w-full max-w-3xl px-6 py-16 text-neutral-900">
+      <h1 className="text-3xl font-semibold">Halbton API</h1>
+
+      <H2>Introduction</H2>
+      <p className="text-sm leading-relaxed">
+        Cette API fournit les données de Halbton, centre fictif pour l'image
+        imprimée installé dans une ancienne imprimerie offset de Berlin-Wedding.
+        Elle permet d'accéder à la liste complète des œuvres de la collection et
+        à leur fiche détaillée, au journal de l'atelier (archive), aux artistes,
+        au programme des expositions et aux informations de visite, et de
+        déposer une demande de billets. Tout le contenu est fictif.
+      </p>
+
+      <H2>Base URL</H2>
+      <Block>{BASE_URL}</Block>
+
+      <H2>Endpoints</H2>
+
+      <H3>1. Obtenir toutes les œuvres</H3>
+      <Route method="GET" path="/objects" />
+      <p className="text-sm">
+        Retourne la liste de toutes les œuvres de la collection.
+      </p>
+      <H4>Paramètres (optionnels)</H4>
+      <Fields
+        items={[
+          ["type", "string", "Filtre par médium, par exemple Riso"],
+          ["artist", "string", "Filtre par slug d'artiste"],
+          ["exhibition", "string", "Filtre par slug d'exposition"],
+          ["onView", "boolean", "true : œuvres exposées en ce moment"],
+          [
+            "q",
+            "string",
+            "Recherche libre sur le titre, l'artiste, le médium et l'année",
+          ],
+        ]}
+      />
+      <H4>Réponse</H4>
+      <p className="text-sm">
+        La réponse est un tableau d'objets JSON, chaque objet représentant une
+        œuvre avec les propriétés suivantes :
+      </p>
+      <Fields items={OBJECT_FIELDS} />
+      <H4>Exemple de réponse</H4>
+      <Block>{list(objects, "œuvres")}</Block>
+
+      <H3>2. Obtenir une œuvre spécifique</H3>
+      <Route method="GET" path="/objects/{slug}" />
+      <p className="text-sm">
+        Retourne les détails d'une œuvre à partir de son slug.
+      </p>
+      <H4>Paramètres</H4>
+      <Fields items={[["slug", "string", "L'identifiant unique de l'œuvre"]]} />
+      <H4>Réponse</H4>
+      <p className="text-sm">
+        Un objet JSON représentant l'œuvre, avec la même structure que dans la
+        liste complète.
+      </p>
+      <Block>{show(objects[3])}</Block>
+
+      <H3>3. Obtenir l'archive</H3>
+      <Route method="GET" path="/archive" />
+      <p className="text-sm">
+        Retourne le journal de l'atelier : épreuves, tests de trame, feuilles
+        égarées et vues de la presse, du plus récent au plus ancien.
+      </p>
+      <H4>Paramètres (optionnels)</H4>
+      <Fields
+        items={[["type", "string", "Filtre par type, par exemple Press"]]}
+      />
+      <H4>Réponse</H4>
+      <Fields items={ARCHIVE_FIELDS} />
+      <H4>Exemple de réponse</H4>
+      <Block>{list(archive, "entrées")}</Block>
+
+      <H3>4. Obtenir une entrée d'archive</H3>
+      <Route method="GET" path="/archive/{slug}" />
+      <p className="text-sm">
+        Retourne une entrée du journal, avec la même structure que dans la
+        liste.
+      </p>
+
+      <H3>5. Obtenir les artistes</H3>
+      <Route method="GET" path="/artists" />
+      <Route method="GET" path="/artists/{slug}" />
+      <p className="text-sm">
+        Retourne la liste des artistes de la collection, ou un artiste à partir
+        de son slug.
+      </p>
+      <H4>Réponse</H4>
+      <Fields items={ARTIST_FIELDS} />
+      <H4>Exemple de réponse</H4>
+      <Block>{show(artists[0])}</Block>
+
+      <H3>6. Obtenir les expositions</H3>
+      <Route method="GET" path="/exhibitions" />
+      <Route method="GET" path="/exhibitions/{slug}" />
+      <p className="text-sm">
+        Retourne le programme, ou une exposition à partir de son slug. Le
+        paramètre optionnel <Code>status</Code> filtre sur <Code>on view</Code>,{" "}
+        <Code>upcoming</Code> ou <Code>past</Code>.
+      </p>
+      <H4>Réponse</H4>
+      <Fields items={EXHIBITION_FIELDS} />
+      <H4>Exemple de réponse</H4>
+      <Block>{show(exhibitions[0])}</Block>
+
+      <H3>7. Obtenir les informations de visite</H3>
+      <Route method="GET" path="/visit" />
+      <p className="text-sm">
+        Retourne l'adresse, les horaires, les tarifs et la liste des jours
+        d'ouverture à venir, calculée chaque jour dans le fuseau du musée.
+      </p>
+      <H4>Réponse</H4>
+      <Fields items={VISIT_FIELDS} />
+      <H4>Exemple de réponse</H4>
+      <Block>{show(visit)}</Block>
+
+      <H3>8. Demander des billets</H3>
+      <Route method="POST" path="/tickets" />
+      <p className="text-sm">
+        Enregistre une demande de billets pour un jour d'ouverture. Aucun
+        paiement en ligne : l'API valide la demande et émet une référence de
+        retrait, les billets sont réglés à l'entrée. Le corps de la requête est
+        un objet JSON.
+      </p>
+      <H4>Corps de la requête</H4>
+      <Fields
+        items={[
+          ["name", "string", "Nom du visiteur (obligatoire)"],
+          ["email", "string", "Adresse email (obligatoire)"],
+          ["date", "string", "Jour de visite, parmi les days de /visit"],
+          [
+            "tickets",
+            "object",
+            "Quantités par catégorie (id de admission) : au moins un billet, au plus maxPerType par catégorie",
+          ],
+        ]}
+      />
+      <Block>{show(ticketRequest)}</Block>
+      <H4>Réponse (201)</H4>
+      <Fields items={TICKET_FIELDS} />
+      <Block>{show(ticketResponse)}</Block>
+      <H4>Demande refusée (400)</H4>
+      <p className="text-sm">
+        Un code par champ en erreur : <Code>date</Code> unavailable,{" "}
+        <Code>tickets</Code> empty ou max, <Code>name</Code> required,{" "}
+        <Code>email</Code> invalid.
+      </p>
+      <Block>
+        {show({
+          error: "Invalid request",
+          fields: { date: "unavailable", tickets: "empty" },
+        })}
+      </Block>
+
+      <H2>Gestion des erreurs</H2>
+      <p className="text-sm">
+        En cas d'erreur, l'API retourne un objet JSON avec une propriété{" "}
+        <Code>error</Code> décrivant l'erreur.
+      </p>
+      <H4>Exemples d'erreurs</H4>
+      <ul className="my-2 list-disc space-y-3 pl-6 text-sm">
+        <li>
+          Œuvre non trouvée (404) :
+          <Block>{show({ error: "Object not found" })}</Block>
+        </li>
+        <li>
+          Requête invalide (400) :
+          <Block>{show({ error: "Invalid JSON body" })}</Block>
+        </li>
+        <li>
+          Erreur serveur (500) :
+          <Block>{show({ error: "Failed to fetch objects" })}</Block>
+        </li>
+      </ul>
+
+      <H2>Notes</H2>
+      <ul className="my-2 list-disc space-y-1 pl-6 text-sm">
+        <li>
+          Toutes les URL d'images sont des URL complètes, incluant le protocole
+          et le nom de domaine.
+        </li>
+        <li>
+          Les images sont des photographies Unsplash servies par leur CDN, déjà
+          recadrées au format du site (paramètres <Code>w</Code>, <Code>h</Code>
+          , <Code>fit=crop</Code>) ; ces paramètres peuvent être adaptés pour
+          obtenir une autre taille.
+        </li>
+        <li>
+          Le champ <Code>slug</Code> peut être utilisé pour construire les URL
+          conviviales de chaque œuvre, entrée d'archive, artiste ou exposition.
+        </li>
+        <li>
+          Certains champs peuvent manquer ou valoir <Code>null</Code> sur
+          certains objets (par exemple <Code>exhibition</Code> pour une œuvre
+          jamais exposée).
+        </li>
+        <li>
+          Les réponses en lecture sont mises en cache par le CDN (une heure, dix
+          minutes pour <Code>/visit</Code>) et acceptent les requêtes depuis
+          n'importe quelle origine (CORS).
+        </li>
+      </ul>
+    </main>
   );
 }

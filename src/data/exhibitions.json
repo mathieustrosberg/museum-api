@@ -1,0 +1,56 @@
+[
+  {
+    "id": 1,
+    "slug": "out-of-register",
+    "title": "Out of register",
+    "dates": "Jun–Oct 2026",
+    "status": "on view",
+    "description": "Three sets in which register is not held: offset sheets from a blanket wash, two riso works with the second drum left to drift. Edition: 500 copies, 45 gsm newsprint.",
+    "works": ["blanket-wash", "second-drum", "corniche-noon"]
+  },
+  {
+    "id": 2,
+    "slug": "same-screen",
+    "title": "Same screen",
+    "dates": "Sep 2026 – Jan 2027",
+    "status": "on view",
+    "description": "One generated set, one photographic set, the same 60 lpi screen. The label states the source; the dot does not. Edition: both sets on one sheet, 80 gsm newsprint.",
+    "works": ["no-negative", "halation"]
+  },
+  {
+    "id": 3,
+    "slug": "run-of-500",
+    "title": "Run of 500",
+    "dates": "Sep–Nov 2024",
+    "status": "past",
+    "description": "First season of the press hall. One set in a run of 500 on 45 gsm newsprint, replaced as sheets yellowed; one set of makeready pulled between jobs.",
+    "works": ["spoilage", "sixty-lines"]
+  },
+  {
+    "id": 4,
+    "slug": "by-contact",
+    "title": "By contact",
+    "dates": "Feb–Apr 2025",
+    "status": "past",
+    "description": "Two photographic sets that stay in contact. Uncut 35 mm rolls on RC paper; fibre prints from 60 lpi film. No enlargement, no crop. Film in the reading room.",
+    "works": ["paper-white", "parana-six-rolls"]
+  },
+  {
+    "id": 5,
+    "slug": "cancelled-plate",
+    "title": "Cancelled plate",
+    "dates": "Sep–Nov 2025",
+    "status": "past",
+    "description": "Plates and screens after their editions: five copper plates scored, one screen reclaimed after its last pull, each with its final proof. Edition: the cancellation proofs, offset, 100 copies.",
+    "works": ["warp-count", "vine-black"]
+  },
+  {
+    "id": 6,
+    "slug": "dot-gain",
+    "title": "Dot gain",
+    "dates": "Nov 2026 – Feb 2027",
+    "status": "upcoming",
+    "description": "Ink spread on absorbent paper, measured. Nine sheets at rising ink limits, densitometer readings on the wall beside them. Edition at 400 per cent on house newsprint; it will cockle.",
+    "works": ["ink-limit"]
+  }
+]
