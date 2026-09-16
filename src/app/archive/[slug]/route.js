@@ -1,7 +1,7 @@
 import { getArchiveEntry } from "@/lib/data";
 import { ERRORS, json, notFound, preflight, serverError } from "@/lib/http";
 
-/** GET /archive/{slug} — une entrée du journal. */
+/** GET /archive/{slug} — une photographie de l'archive. */
 export async function GET(_request, { params }) {
   try {
     const { slug } = await params;

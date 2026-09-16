@@ -22,7 +22,7 @@ function isoDate(date, timeZone) {
   return `${get("year")}-${get("month")}-${get("day")}`;
 }
 
-const labelFormat = new Intl.DateTimeFormat("en-GB", {
+const labelFormat = new Intl.DateTimeFormat("fr-FR", {
   timeZone: "UTC",
   weekday: "short",
   day: "numeric",
@@ -30,12 +30,12 @@ const labelFormat = new Intl.DateTimeFormat("en-GB", {
   year: "numeric",
 });
 
-/** Libellé d'une date civile ISO : « Thu 17 Sept 2026 ». */
+/** Libellé d'une date civile ISO : « jeu. 17 sept. 2026 ». */
 export function formatDay(iso) {
   return labelFormat.format(new Date(`${iso}T00:00:00Z`));
 }
 
-/** Jours d'ouverture des prochaines semaines : [{ value: "2026-09-17", label: "Thu 17 Sept 2026" }]. */
+/** Jours d'ouverture des prochaines semaines : [{ value: "2026-09-17", label: "jeu. 17 sept. 2026" }]. */
 export function getOpenDays(now = new Date()) {
   const info = getVisitInfo();
   const today = new Date(isoDate(now, info.timeZone));

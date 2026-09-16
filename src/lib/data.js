@@ -33,12 +33,14 @@ const normalize = (s) =>
   String(s).normalize("NFD").replace(/\p{M}/gu, "").toLowerCase();
 
 /**
- * Liste des œuvres, filtrable : type (médium), artist (slug), exhibition (slug),
- * onView ("true" | "false"), q (texte libre sur titre, artiste, médium, année).
+ * Liste des œuvres et espaces, filtrable : category ("work" | "space"), type,
+ * artist (slug), exhibition (slug), onView ("true" | "false"), q (texte libre
+ * sur titre, artiste, type, technique, année).
  */
 export function getObjects(filters = {}) {
   let list = objects.map(shapeObject);
-  const { type, artist, exhibition, onView, q } = filters;
+  const { category, type, artist, exhibition, onView, q } = filters;
+  if (category) list = list.filter((o) => o.category === category);
   if (type) list = list.filter((o) => normalize(o.type) === normalize(type));
   if (artist) list = list.filter((o) => o.artistSlug === artist);
   if (exhibition) list = list.filter((o) => o.exhibition === exhibition);

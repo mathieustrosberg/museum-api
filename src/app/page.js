@@ -32,22 +32,35 @@ const OBJECT_FIELDS = [
   ["title", "string", "Titre de l'œuvre"],
   ["artist", "string", "Nom de l'artiste"],
   ["artistSlug", "string", "Slug de l'artiste (voir /artists/{slug})"],
+  [
+    "category",
+    "string",
+    "work (tableau ou œuvre) ou space (espace de la maison)",
+  ],
   ["year", "number", "Année de réalisation"],
-  ["type", "string", "Médium (Offset, Riso, Screenprint, Gelatin silver…)"],
-  ["medium", "string", "Technique détaillée (encre, papier, linéature)"],
-  ["dimensions", "string", "Dimensions d'une feuille"],
-  ["sheets", "number", "Nombre de feuilles"],
+  [
+    "type",
+    "string",
+    "Type (Maison-atelier, Jameo, Jardin… ; Peinture pour un tableau)",
+  ],
+  ["medium", "string", "Technique d'un tableau ou matériaux d'un espace"],
+  ["dimensions", "string", "Dimensions ou surface, si documentées (optionnel)"],
+  ["sheets", "number", "Nombre de photographies"],
   ["inventory", "string", "Numéro d'inventaire"],
-  ["color", "string", "Encre ou procédé dominant"],
-  ["description", "string", "Notice de l'œuvre, en texte brut"],
-  ["image", "string", "Lien vers l'image principale (feuille 1, format 3:4)"],
-  ["gallery", "string array", "Liens des autres feuilles, dans l'ordre"],
+  ["color", "boolean", "Vrai si les photographies sont affichées en couleur"],
+  [
+    "description",
+    "string",
+    "Notice, en texte brut, avec le crédit des photographies",
+  ],
+  ["image", "string", "Lien vers la photographie principale"],
+  ["gallery", "string array", "Liens des autres photographies, dans l'ordre"],
   [
     "exhibition",
     "string | null",
     "Slug de l'exposition où l'œuvre est ou a été montrée",
   ],
-  ["location", "string", "Emplacement dans le bâtiment"],
+  ["location", "string", "Lieu (commune, île)"],
   ["onView", "boolean", "Vrai si l'œuvre est actuellement exposée"],
   ["similar", "string array", "Slugs de quatre œuvres proches"],
 ];
@@ -55,12 +68,17 @@ const OBJECT_FIELDS = [
 const ARCHIVE_FIELDS = [
   ["id", "number", "Identifiant numérique"],
   ["slug", "string", "Identifiant unique dans les URL"],
-  ["title", "string", "Titre de l'entrée (Proof log 01…)"],
-  ["date", "string", "Mois et année"],
-  ["type", "string", "Proof, Press, Screen, Ink, Light, Sheet, Paper ou Plate"],
+  ["title", "string", "Titre de la photographie (Salon, Atelier…)"],
+  ["date", "string", "Année"],
+  ["type", "string", "Maison, Atelier, Œuvre, Détail, Photographie ou Île"],
   ["orientation", "string", "portrait (3:4) ou landscape (4:3)"],
   ["description", "string", "Légende"],
-  ["image", "string", "Lien vers l'image"],
+  ["image", "string", "Lien vers l'image, servie par l'API"],
+  [
+    "color",
+    "boolean",
+    "Vrai si la photo est affichée en couleur, sans le filtre noir et blanc du site",
+  ],
 ];
 
 const ARTIST_FIELDS = [
@@ -192,8 +210,8 @@ export default function DocumentationPage() {
     date: firstDay?.value,
     dateLabel: firstDay?.label,
     tickets: [
-      { id: "full", label: "Full", quantity: 2, price: 8 },
-      { id: "under18", label: "Under 18", quantity: 1, price: 0 },
+      { id: "full", label: "Plein tarif", quantity: 2, price: 8 },
+      { id: "under18", label: "-18 ans", quantity: 1, price: 0 },
     ],
     total: 16,
     currency: visit.currency,
@@ -227,7 +245,8 @@ export default function DocumentationPage() {
       <H4>Paramètres (optionnels)</H4>
       <Fields
         items={[
-          ["type", "string", "Filtre par médium, par exemple Riso"],
+          ["category", "string", "work (œuvres) ou space (espaces)"],
+          ["type", "string", "Filtre par type, par exemple Jardin"],
           ["artist", "string", "Filtre par slug d'artiste"],
           ["exhibition", "string", "Filtre par slug d'exposition"],
           ["onView", "boolean", "true : œuvres exposées en ce moment"],
@@ -259,17 +278,18 @@ export default function DocumentationPage() {
         Un objet JSON représentant l'œuvre, avec la même structure que dans la
         liste complète.
       </p>
-      <Block>{show(objects[3])}</Block>
+      <Block>{show(objects[1])}</Block>
 
       <H3>3. Obtenir l'archive</H3>
       <Route method="GET" path="/archive" />
       <p className="text-sm">
-        Retourne le journal de l'atelier : épreuves, tests de trame, feuilles
-        égarées et vues de la presse, du plus récent au plus ancien.
+        Retourne les photographies de l'archive : maison et atelier de César
+        Manrique, tableaux et détails, vues de l'île (photographies de Vladimir
+        Kysela).
       </p>
       <H4>Paramètres (optionnels)</H4>
       <Fields
-        items={[["type", "string", "Filtre par type, par exemple Press"]]}
+        items={[["type", "string", "Filtre par type, par exemple Atelier"]]}
       />
       <H4>Réponse</H4>
       <Fields items={ARCHIVE_FIELDS} />
@@ -385,10 +405,10 @@ export default function DocumentationPage() {
           et le nom de domaine.
         </li>
         <li>
-          Les images sont des photographies Unsplash servies par leur CDN, déjà
-          recadrées au format du site (paramètres <Code>w</Code>, <Code>h</Code>
-          , <Code>fit=crop</Code>) ; ces paramètres peuvent être adaptés pour
-          obtenir une autre taille.
+          Les photographies de la collection et de l'archive sont servies par
+          l'API elle-même (dossier <Code>public/images</Code>) ; un identifiant
+          Unsplash reste accepté dans les données et donne une URL recadrée par
+          leur CDN.
         </li>
         <li>
           Le champ <Code>slug</Code> peut être utilisé pour construire les URL
