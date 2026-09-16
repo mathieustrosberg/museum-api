@@ -58,7 +58,7 @@ tools/similar-works.mjs   fiches proches (type, artiste, exposition, matériaux,
 
 ## Déploiement
 
-Projet Vercel sans configuration particulière (`npm run build`). L'URL de base affichée dans la documentation et les URL d'images viennent de `VERCEL_PROJECT_PRODUCTION_URL`. Côté site, renseigner `HALBTON_API_URL` avec l'URL du déploiement.
+Projet Vercel sans configuration particulière (`npm run build`). L'URL de base affichée dans la documentation et les URL d'images viennent de `VERCEL_PROJECT_PRODUCTION_URL`. Côté site, renseigner `FCM_API_URL` avec l'URL du déploiement.
 
 ## Crédits
 
