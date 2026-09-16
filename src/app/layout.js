@@ -8,9 +8,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Halbton API",
+  title: "API Fondation César Manrique",
   description:
-    "API du centre Halbton, musée fictif de l'image imprimée à Berlin : œuvres, archive, artistes, expositions, visite et billets.",
+    "API du site de la Fondation César Manrique, Tahíche, Lanzarote : espaces et œuvres, archive photographique, artistes, expositions, visite et billets.",
 };
 
 export default function RootLayout({ children }) {

@@ -13,7 +13,7 @@ const ROUTES = [
   "/tickets (POST)",
 ];
 
-export const metadata = { title: "Halbton API — 404" };
+export const metadata = { title: "API Fondation César Manrique — 404" };
 
 /** Route inconnue : rappel des endpoints et lien vers la documentation. */
 export default function NotFound() {
@@ -22,8 +22,8 @@ export default function NotFound() {
       <p className="font-mono text-xs text-neutral-500">404</p>
       <h1 className="mt-2 text-3xl font-semibold">Route inconnue</h1>
       <p className="mt-4 text-sm leading-relaxed">
-        Cette adresse ne correspond à aucun endpoint de l'API Halbton. Les
-        routes disponibles sont :
+        Cette adresse ne correspond à aucun endpoint de l'API de la Fondation
+        César Manrique. Les routes disponibles sont :
       </p>
       <ul className="my-4 list-disc space-y-1 pl-6 text-sm">
         {ROUTES.map((route) => (

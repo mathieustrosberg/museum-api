@@ -25,7 +25,7 @@
       "casa-museo-del-campesino",
       "jameos-del-agua",
       "lago-martianez",
-      "lagomar"
+      "jardin-de-cactus"
     ]
   },
   {
@@ -131,37 +131,6 @@
       "taro-de-tahiche",
       "jameos-del-agua",
       "jardin-de-cactus"
-    ]
-  },
-  {
-    "id": 6,
-    "slug": "lagomar",
-    "title": "LagOmar",
-    "artist": "Jesús Soto",
-    "artistSlug": "jesus-soto",
-    "category": "space",
-    "year": 1970,
-    "type": "Maison",
-    "medium": "Lave rouge de carrière, chaux, eau",
-    "sheets": 6,
-    "inventory": "FCM E.006",
-    "color": true,
-    "description": "Maison creusée dans une ancienne carrière de lave rouge à Nazaret, commandée en 1970 par Sam Benady et réalisée par Jesús Soto, proche collaborateur de Manrique ; la part de César Manrique dans la conception est rapportée par les guides touristiques, non par la Fondation. Terrasses blanches, piscine, tunnels et escaliers taillés dans la roche. Achetée par Omar Sharif dans les années 1980, d'où son nom. Photographies : Lucas Allmann, alleksana, Miguel Rivera et Javier Balseiro, Pexels.",
-    "exhibition": null,
-    "location": "Nazaret, Teguise",
-    "images": [
-      "/images/collection/lagomar-1.jpg",
-      "/images/collection/lagomar-2.jpg",
-      "/images/collection/lagomar-3.jpg",
-      "/images/collection/lagomar-4.jpg",
-      "/images/collection/lagomar-5.jpg",
-      "/images/collection/lagomar-6.jpg"
-    ],
-    "similar": [
-      "casa-museo-del-campesino",
-      "taro-de-tahiche",
-      "jameos-del-agua",
-      "lago-martianez"
     ]
   }
 ]

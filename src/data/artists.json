@@ -13,14 +13,5 @@
       "casa-museo-del-campesino",
       "lago-martianez"
     ]
-  },
-  {
-    "id": 2,
-    "slug": "jesus-soto",
-    "name": "Jesús Soto",
-    "born": "Lanzarote",
-    "based": "Lanzarote",
-    "practice": "Collaborateur de César Manrique sur les Jameos del Agua, le Jardín de Cactus et le Mirador del Río ; auteur de LagOmar.",
-    "works": ["lagomar", "jameos-del-agua"]
   }
 ]

@@ -200,8 +200,8 @@ export default function DocumentationPage() {
   const [firstDay] = visit.days;
 
   const ticketRequest = {
-    name: "Ada Berger",
-    email: "ada@example.com",
+    name: "Ana García",
+    email: "ana@example.com",
     date: firstDay?.value,
     tickets: { full: 2, under18: 1 },
   };
@@ -215,21 +215,22 @@ export default function DocumentationPage() {
     ],
     total: 16,
     currency: visit.currency,
-    name: "Ada Berger",
+    name: "Ana García",
   };
 
   return (
     <main className="mx-auto w-full max-w-3xl px-6 py-16 text-neutral-900">
-      <h1 className="text-3xl font-semibold">Halbton API</h1>
+      <h1 className="text-3xl font-semibold">API Fondation César Manrique</h1>
 
       <H2>Introduction</H2>
       <p className="text-sm leading-relaxed">
-        Cette API fournit les données de Halbton, centre fictif pour l'image
-        imprimée installé dans une ancienne imprimerie offset de Berlin-Wedding.
-        Elle permet d'accéder à la liste complète des œuvres de la collection et
-        à leur fiche détaillée, au journal de l'atelier (archive), aux artistes,
-        au programme des expositions et aux informations de visite, et de
-        déposer une demande de billets. Tout le contenu est fictif.
+        Cette API fournit les données du site de la Fondation César Manrique,
+        installée dans l'ancienne maison de l'artiste à Tahíche, Lanzarote. Elle
+        donne accès aux espaces et œuvres de la collection et à leur fiche, aux
+        photographies de l'archive, aux artistes, au programme des expositions
+        et aux informations de visite, et reçoit les demandes de billets. Projet
+        d'étude : la billetterie est une démonstration, les expositions sont
+        encore fictives.
       </p>
 
       <H2>Base URL</H2>
