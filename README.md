@@ -55,6 +55,16 @@ tools/similar-works.mjs   fiches proches (type, artiste, matériaux, année)
 - **Billetterie de démonstration, sans persistance.** `POST /tickets` valide la demande (jour ouvert, quantités, nom, email), calcule le total et émet une référence `FCM-AAMMJJ-XXXX` ; rien n'est transmis à la Fondation. Les erreurs sont des codes par champ, le client les traduit.
 - **Documentation vivante.** La page d'accueil importe les mêmes fonctions que les routes : les exemples de réponse sont toujours ceux des données réelles.
 
+## Conventions
+
+- Une ressource = un dossier dans `src/app` avec `route.js` (liste) et `[slug]/route.js` (détail). Les réponses passent par `src/lib/http.js` (`json`, `notFound`, `badRequest`, `serverError`, `preflight`) : pas de `Response` construite à la main.
+- Les données vivent dans `src/data/*.json` et ne sont exposées qu'à travers `src/lib/data.js`, qui construit les URL d'images (`src/lib/images.js`) et les champs dérivés (`image`, `gallery`). Les fichiers de données ne contiennent jamais d'URL complète : un chemin `/images/…` servi depuis `public` (photographies redimensionnées à 2000 px environ).
+- Après tout ajout ou retrait de fiche : `npm run similar` pour recalculer le champ `similar`, puis vérifier la page de documentation (ses exemples viennent des données).
+- Les messages d'erreur sont centralisés dans `ERRORS` (`src/lib/http.js`) ; les erreurs de validation des billets sont des codes par champ (`unavailable`, `empty`, `max`, `required`, `invalid`), pas des phrases. La référence de retrait est `FCM-AAMMJJ-XXXX` (`src/lib/visit.js`) ; le site ne dépend pas de ce format.
+- Pas de persistance ni de service externe : l'API est un serveur de lecture plus une validation. Si une base ou un service arrive, l'introduire dans `src/lib`, les routes ne changent pas.
+- Documentation et libellés des données en français (langue du site) ; messages et codes d'erreur en anglais.
+- Une photographie n'est attribuée à un lieu qu'après vérification (titre et lieu de sa page Pexels, notice du photographe) ; une œuvre sans documentation garde un titre descriptif, `year` à `null` et une notice qui le dit.
+
 ## Déploiement
 
 Projet Vercel sans configuration particulière (`npm run build`). L'URL de base affichée dans la documentation et les URL d'images viennent de `VERCEL_PROJECT_PRODUCTION_URL`. Côté site, renseigner `FCM_API_URL` avec l'URL du déploiement.
