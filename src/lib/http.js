@@ -12,7 +12,6 @@ export const ERRORS = {
   object: "Object not found",
   entry: "Archive entry not found",
   artist: "Artist not found",
-  exhibition: "Exhibition not found",
   fetch: "Failed to fetch objects",
   invalid: "Invalid request",
   json: "Invalid JSON body",
@@ -48,7 +47,7 @@ export function preflight() {
   return new Response(null, { status: 204, headers: CORS_HEADERS });
 }
 
-/** Paramètres de requête sous forme d'objet simple (?type=Riso&onView=true). */
+/** Paramètres de requête sous forme d'objet simple (?category=space&type=Jardin). */
 export function query(request) {
   return Object.fromEntries(new URL(request.url).searchParams);
 }

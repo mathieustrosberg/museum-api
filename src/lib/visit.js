@@ -51,12 +51,12 @@ export function getOpenDays(now = new Date()) {
   return days;
 }
 
-/** Référence de retrait : HB-AAMMJJ-XXXX (alphabet sans caractères ambigus). */
+/** Référence de retrait : FCM-AAMMJJ-XXXX (alphabet sans caractères ambigus). */
 export function reference(date) {
   const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
   let code = "";
   for (let i = 0; i < 4; i++) code += alphabet[randomInt(alphabet.length)];
-  return `HB-${date.replaceAll("-", "").slice(2)}-${code}`;
+  return `FCM-${date.replaceAll("-", "").slice(2)}-${code}`;
 }
 
 /**

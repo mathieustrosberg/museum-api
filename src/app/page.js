@@ -1,10 +1,4 @@
-import {
-  getArchive,
-  getArtists,
-  getExhibitions,
-  getObjects,
-  getVisitInfo,
-} from "@/lib/data";
+import { getArchive, getArtists, getObjects, getVisitInfo } from "@/lib/data";
 import { getOpenDays } from "@/lib/visit";
 
 /**
@@ -37,7 +31,7 @@ const OBJECT_FIELDS = [
     "string",
     "work (tableau ou œuvre) ou space (espace de la maison)",
   ],
-  ["year", "number", "Année de réalisation"],
+  ["year", "number | null", "Année de réalisation, null si non documentée"],
   [
     "type",
     "string",
@@ -55,13 +49,7 @@ const OBJECT_FIELDS = [
   ],
   ["image", "string", "Lien vers la photographie principale"],
   ["gallery", "string array", "Liens des autres photographies, dans l'ordre"],
-  [
-    "exhibition",
-    "string | null",
-    "Slug de l'exposition où l'œuvre est ou a été montrée",
-  ],
   ["location", "string", "Lieu (commune, île)"],
-  ["onView", "boolean", "Vrai si l'œuvre est actuellement exposée"],
   ["similar", "string array", "Slugs de quatre œuvres proches"],
 ];
 
@@ -89,16 +77,6 @@ const ARTIST_FIELDS = [
   ["based", "string", "Ville de travail"],
   ["practice", "string", "Pratique, en une phrase"],
   ["works", "string array", "Slugs des œuvres de la collection"],
-];
-
-const EXHIBITION_FIELDS = [
-  ["id", "number", "Identifiant numérique"],
-  ["slug", "string", "Identifiant unique dans les URL"],
-  ["title", "string", "Titre"],
-  ["dates", "string", "Période"],
-  ["status", "string", "on view, upcoming ou past"],
-  ["description", "string", "Présentation"],
-  ["works", "string array", "Slugs des œuvres présentées"],
 ];
 
 const VISIT_FIELDS = [
@@ -131,7 +109,7 @@ const VISIT_FIELDS = [
 ];
 
 const TICKET_FIELDS = [
-  ["reference", "string", "Référence de retrait, format HB-AAMMJJ-XXXX"],
+  ["reference", "string", "Référence de retrait, format FCM-AAMMJJ-XXXX"],
   ["date", "string", "Jour de visite (YYYY-MM-DD)"],
   ["dateLabel", "string", "Jour de visite, en clair"],
   ["tickets", "object array", "Lignes retenues : id, label, quantity, price"],
@@ -195,7 +173,6 @@ export default function DocumentationPage() {
   const objects = getObjects();
   const archive = getArchive();
   const artists = getArtists();
-  const exhibitions = getExhibitions();
   const visit = { ...getVisitInfo(), days: getOpenDays().slice(0, 2) };
   const [firstDay] = visit.days;
 
@@ -206,7 +183,7 @@ export default function DocumentationPage() {
     tickets: { full: 2, under18: 1 },
   };
   const ticketResponse = {
-    reference: "HB-260917-K7RM",
+    reference: `FCM-${firstDay.value.replaceAll("-", "").slice(2)}-K7RM`,
     date: firstDay?.value,
     dateLabel: firstDay?.label,
     tickets: [
@@ -227,10 +204,9 @@ export default function DocumentationPage() {
         Cette API fournit les données du site de la Fondation César Manrique,
         installée dans l'ancienne maison de l'artiste à Tahíche, Lanzarote. Elle
         donne accès aux espaces et œuvres de la collection et à leur fiche, aux
-        photographies de l'archive, aux artistes, au programme des expositions
-        et aux informations de visite, et reçoit les demandes de billets. Projet
-        d'étude : la billetterie est une démonstration, les expositions sont
-        encore fictives.
+        photographies de l'archive, aux artistes et aux informations de visite,
+        et reçoit les demandes de billets. Projet d'étude : la billetterie est
+        une démonstration, aucune demande n'est transmise à la Fondation.
       </p>
 
       <H2>Base URL</H2>
@@ -249,8 +225,6 @@ export default function DocumentationPage() {
           ["category", "string", "work (œuvres) ou space (espaces)"],
           ["type", "string", "Filtre par type, par exemple Jardin"],
           ["artist", "string", "Filtre par slug d'artiste"],
-          ["exhibition", "string", "Filtre par slug d'exposition"],
-          ["onView", "boolean", "true : œuvres exposées en ce moment"],
           [
             "q",
             "string",
@@ -316,20 +290,7 @@ export default function DocumentationPage() {
       <H4>Exemple de réponse</H4>
       <Block>{show(artists[0])}</Block>
 
-      <H3>6. Obtenir les expositions</H3>
-      <Route method="GET" path="/exhibitions" />
-      <Route method="GET" path="/exhibitions/{slug}" />
-      <p className="text-sm">
-        Retourne le programme, ou une exposition à partir de son slug. Le
-        paramètre optionnel <Code>status</Code> filtre sur <Code>on view</Code>,{" "}
-        <Code>upcoming</Code> ou <Code>past</Code>.
-      </p>
-      <H4>Réponse</H4>
-      <Fields items={EXHIBITION_FIELDS} />
-      <H4>Exemple de réponse</H4>
-      <Block>{show(exhibitions[0])}</Block>
-
-      <H3>7. Obtenir les informations de visite</H3>
+      <H3>6. Obtenir les informations de visite</H3>
       <Route method="GET" path="/visit" />
       <p className="text-sm">
         Retourne l'adresse, les horaires, les tarifs et la liste des jours
@@ -340,7 +301,7 @@ export default function DocumentationPage() {
       <H4>Exemple de réponse</H4>
       <Block>{show(visit)}</Block>
 
-      <H3>8. Demander des billets</H3>
+      <H3>7. Demander des billets</H3>
       <Route method="POST" path="/tickets" />
       <p className="text-sm">
         Enregistre une demande de billets pour un jour d'ouverture. Aucun
@@ -407,18 +368,16 @@ export default function DocumentationPage() {
         </li>
         <li>
           Les photographies de la collection et de l'archive sont servies par
-          l'API elle-même (dossier <Code>public/images</Code>) ; un identifiant
-          Unsplash reste accepté dans les données et donne une URL recadrée par
-          leur CDN.
+          l'API elle-même (dossier <Code>public/images</Code>, redimensionnées à
+          2000 px environ).
         </li>
         <li>
           Le champ <Code>slug</Code> peut être utilisé pour construire les URL
           conviviales de chaque œuvre, entrée d'archive, artiste ou exposition.
         </li>
         <li>
-          Certains champs peuvent manquer ou valoir <Code>null</Code> sur
-          certains objets (par exemple <Code>exhibition</Code> pour une œuvre
-          jamais exposée).
+          Certains champs peuvent manquer sur certains objets (par exemple{" "}
+          <Code>dimensions</Code> pour un espace non documenté).
         </li>
         <li>
           Les réponses en lecture sont mises en cache par le CDN (une heure, dix

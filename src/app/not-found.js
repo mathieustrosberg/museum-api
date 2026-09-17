@@ -7,8 +7,6 @@ const ROUTES = [
   "/archive/{slug}",
   "/artists",
   "/artists/{slug}",
-  "/exhibitions",
-  "/exhibitions/{slug}",
   "/visit",
   "/tickets (POST)",
 ];
