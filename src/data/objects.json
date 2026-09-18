@@ -134,15 +134,17 @@
     "year": 1972,
     "type": "Maison",
     "medium": "Tuf volcanique, basalte, chaux",
-    "sheets": 3,
+    "sheets": 5,
     "inventory": "FCM E.006",
     "color": true,
-    "description": "Maison creusée dans une ancienne carrière de tuf volcanique à Nazaret, au début des années 1970, par Jesús Soto, collaborateur de Manrique, avec César Manrique, pour le promoteur Sam Benady. Pièces et tunnels épousent les fronts de taille, sous les formes blanches à la chaux, autour d'une piscine. Encore en chantier en 1972, elle aurait été perdue au bridge par l'acteur Omar Sharif, en tournage sur l'île, d'où son nom. Aujourd'hui musée, la maison n'appartient pas à la Fondation. Photographies : alleksana et Mihai Vlasceanu, Pexels.",
+    "description": "Maison creusée dans une ancienne carrière de tuf volcanique à Nazaret, au début des années 1970, par Jesús Soto, collaborateur de Manrique, avec César Manrique, pour le promoteur Sam Benady. Pièces et tunnels épousent les fronts de taille, sous les formes blanches à la chaux, autour d'une piscine ; un couloir se franchit sur des planches posées sur l'eau. Encore en chantier en 1972, elle aurait été perdue au bridge par l'acteur Omar Sharif, en tournage sur l'île, d'où son nom. Aujourd'hui musée, la maison n'appartient pas à la Fondation. Photographies : alleksana, Mihai Vlasceanu, Mathias Reding et Javier Balseiro, Pexels.",
     "location": "Nazaret, Teguise",
     "images": [
       "/images/collection/lagomar-1.jpg",
       "/images/collection/lagomar-2.jpg",
-      "/images/collection/lagomar-3.jpg"
+      "/images/collection/lagomar-3.jpg",
+      "/images/collection/lagomar-4.jpg",
+      "/images/collection/lagomar-5.jpg"
     ],
     "similar": [
       "casa-museo-del-campesino",
