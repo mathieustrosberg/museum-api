@@ -22,8 +22,8 @@
     "similar": [
       "casa-museo-del-campesino",
       "jameos-del-agua",
-      "lago-martianez",
-      "jardin-de-cactus"
+      "lagomar",
+      "lago-martianez"
     ]
   },
   {
@@ -51,7 +51,7 @@
       "taro-de-tahiche",
       "lago-martianez",
       "casa-museo-del-campesino",
-      "jardin-de-cactus"
+      "lagomar"
     ]
   },
   {
@@ -71,10 +71,10 @@
     "location": "Guatiza, Teguise",
     "images": ["/images/collection/jardin-de-cactus-1.jpg"],
     "similar": [
+      "lagomar",
       "casa-museo-del-campesino",
       "lago-martianez",
-      "taro-de-tahiche",
-      "jameos-del-agua"
+      "taro-de-tahiche"
     ]
   },
   {
@@ -96,8 +96,8 @@
     "similar": [
       "taro-de-tahiche",
       "jameos-del-agua",
-      "jardin-de-cactus",
-      "lago-martianez"
+      "lagomar",
+      "jardin-de-cactus"
     ]
   },
   {
@@ -120,7 +120,34 @@
     "similar": [
       "jameos-del-agua",
       "taro-de-tahiche",
+      "lagomar",
+      "casa-museo-del-campesino"
+    ]
+  },
+  {
+    "id": 10,
+    "slug": "lagomar",
+    "title": "LagOmar",
+    "artist": "Jesús Soto et César Manrique",
+    "artistSlug": "cesar-manrique",
+    "category": "space",
+    "year": 1972,
+    "type": "Maison",
+    "medium": "Tuf volcanique, basalte, chaux",
+    "sheets": 3,
+    "inventory": "FCM E.006",
+    "color": true,
+    "description": "Maison creusée dans une ancienne carrière de tuf volcanique à Nazaret, au début des années 1970, par Jesús Soto, collaborateur de Manrique, avec César Manrique, pour le promoteur Sam Benady. Pièces et tunnels épousent les fronts de taille, sous les formes blanches à la chaux, autour d'une piscine. Encore en chantier en 1972, elle aurait été perdue au bridge par l'acteur Omar Sharif, en tournage sur l'île, d'où son nom. Aujourd'hui musée, la maison n'appartient pas à la Fondation. Photographies : alleksana et Mihai Vlasceanu, Pexels.",
+    "location": "Nazaret, Teguise",
+    "images": [
+      "/images/collection/lagomar-1.jpg",
+      "/images/collection/lagomar-2.jpg",
+      "/images/collection/lagomar-3.jpg"
+    ],
+    "similar": [
       "casa-museo-del-campesino",
+      "taro-de-tahiche",
+      "jameos-del-agua",
       "jardin-de-cactus"
     ]
   },
